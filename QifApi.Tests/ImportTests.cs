@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using NUnit.Framework;
 using QifApi.Config;
@@ -26,6 +27,23 @@ namespace QifApi.Tests
                 Assert.AreEqual(2, dom.AccountListTransactions.Count);
                 Assert.AreEqual("Checking 0101", dom.AccountListTransactions[0].Name);
                 Assert.AreEqual("Savings 0202", dom.AccountListTransactions[1].Name);
+            }
+        }
+
+        [Test]
+        public void Import_retains_Account_association()
+        {
+            var sample = ResourceHelpers.ExtractResourceToString("QifApi.Tests.SampleData.sample.with.one.account.qif");
+
+            using (new SpoofCulture(new CultureInfo("en-US")))
+            using (var reader = new StreamReader(sample.ToUTF8MemoryStream()))
+            {
+                var dom = new QifDom();
+
+                dom.Import(reader);
+
+                Assert.AreEqual(3, dom.BankTransactions.Count(x => x.Account.Name == "Checking 0101"));
+                Assert.AreEqual(26, dom.BankTransactions.Count(x => x.Account.Name == "Savings 0202"));
             }
         }
 

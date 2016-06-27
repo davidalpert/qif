@@ -129,6 +129,16 @@ namespace QifApi.Transactions
         }
 
         /// <summary>
+        /// Gets or sets the owning account, if one exists.
+        /// </summary>
+        /// <value>The owning account.</value>
+        public AccountListTransaction Account
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="InvestmentTransaction"/> class.
         /// </summary>
         public InvestmentTransaction()

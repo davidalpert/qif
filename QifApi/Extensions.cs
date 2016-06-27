@@ -3,12 +3,29 @@ using QifApi.Config;
 using System.Diagnostics;
 using System.Globalization;
 using QifApi.Helpers;
+using QifApi.Transactions;
 
 namespace QifApi
 {
 
     internal static class Extensions
     {
+        internal static BasicTransaction BuildBasicTransaction(this AccountListTransaction account)
+        {
+            return new BasicTransaction
+                {
+                    Account = account
+                };
+        }
+
+        internal static InvestmentTransaction BuildInvestmentTransaction(this AccountListTransaction account)
+        {
+            return new InvestmentTransaction
+                {
+                    Account = account
+                };
+        }
+
         internal static string GetDateString(this DateTime @this, Configuration config)
         {
             string result = null;

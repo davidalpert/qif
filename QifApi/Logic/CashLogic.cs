@@ -15,13 +15,14 @@ namespace QifApi.Logic
         /// </summary>
         /// <param name="transactionItems">The transaction delimited string</param>
         /// <param name="config">The configuration to use while importing raw data</param> 
+        /// <param name="lastImportedAccountReference">The last <see cref="AccountListTransaction"/> imported which owns the imported transactions</param>
         /// <returns>A collection of bank transactions</returns>
-        internal static List<BasicTransaction> Import(string transactionItems, Configuration config)
+        internal static List<BasicTransaction> Import(string transactionItems, Configuration config, AccountListTransaction lastImportedAccountReference)
         {
             List<BasicTransaction> result = new List<BasicTransaction>();
 
             // Create a new bank transaction
-            BasicTransaction ct = new BasicTransaction();
+            BasicTransaction ct = lastImportedAccountReference.BuildBasicTransaction();
 
             // Split the string by new lines
             string[] sEntries = Regex.Split(transactionItems, "$", RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.IgnorePatternWhitespace);
@@ -113,7 +114,7 @@ namespace QifApi.Logic
                             ct = null;
 
                             // Create a new bank transaction
-                            ct = new BasicTransaction();
+                            ct = lastImportedAccountReference.BuildBasicTransaction();
 
                             // Stop processing
                             break;

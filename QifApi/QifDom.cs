@@ -255,6 +255,8 @@ namespace QifApi
 
             // Split the file by header types
             string[] transactionTypes = Regex.Split(input, @"^(!.*)$", RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.IgnorePatternWhitespace);
+            // prepare to cache the last imported account reference
+            AccountListTransaction lastImportedAccountReference = null;
 
             // Loop through the transaction types
             for (int i = 0; i < transactionTypes.Length; i++)
@@ -276,7 +278,7 @@ namespace QifApi
                             string bankItems = transactionTypes[i];
 
                             // Import all transaction types
-                            result.BankTransactions.AddRange(BankLogic.Import(bankItems, result.Configuration));
+                            result.BankTransactions.AddRange(BankLogic.Import(bankItems, result.Configuration, lastImportedAccountReference));
 
                             // All done
                             break;
@@ -288,7 +290,16 @@ namespace QifApi
                             string accountListItems = transactionTypes[i];
 
                             // Import all transaction types
-                            result.AccountListTransactions.AddRange(AccountListLogic.Import(accountListItems, result.Configuration));
+                            var accountListTransactions = AccountListLogic.Import(accountListItems, result.Configuration);
+
+                            // Cache the last imported transaction
+                            var indexOfLastTransaction = accountListTransactions.Count - 1;
+                            lastImportedAccountReference = indexOfLastTransaction >= 0
+                                                               ? accountListTransactions[indexOfLastTransaction]
+                                                               : null;
+
+                            // Save the imported account declarations
+                            result.AccountListTransactions.AddRange(accountListTransactions);
 
                             // All done
                             break;
@@ -300,7 +311,7 @@ namespace QifApi
                             string assetItems = transactionTypes[i];
 
                             // Import all transaction types
-                            result.AssetTransactions.AddRange(AssetLogic.Import(assetItems, result.Configuration));
+                            result.AssetTransactions.AddRange(AssetLogic.Import(assetItems, result.Configuration, lastImportedAccountReference));
 
                             // All done
                             break;
@@ -312,7 +323,7 @@ namespace QifApi
                             string cashItems = transactionTypes[i];
 
                             // Import all transaction types
-                            result.CashTransactions.AddRange(CashLogic.Import(cashItems, result.Configuration));
+                            result.CashTransactions.AddRange(CashLogic.Import(cashItems, result.Configuration, lastImportedAccountReference));
 
                             // All done
                             break;
@@ -348,7 +359,7 @@ namespace QifApi
                             string ccItems = transactionTypes[i];
 
                             // Import all transaction types
-                            result.CreditCardTransactions.AddRange(CreditCardLogic.Import(ccItems, result.Configuration));
+                            result.CreditCardTransactions.AddRange(CreditCardLogic.Import(ccItems, result.Configuration, lastImportedAccountReference));
 
                             // All done
                             break;
@@ -360,7 +371,7 @@ namespace QifApi
                             string investItems = transactionTypes[i];
 
                             // Import all transaction types
-                            result.InvestmentTransactions.AddRange(InvestmentLogic.Import(investItems, result.Configuration));
+                            result.InvestmentTransactions.AddRange(InvestmentLogic.Import(investItems, result.Configuration, lastImportedAccountReference));
 
                             // All done
                             break;
@@ -372,7 +383,7 @@ namespace QifApi
                             string liabilityItems = transactionTypes[i];
 
                             // Import all transaction types
-                            result.LiabilityTransactions.AddRange(LiabilityLogic.Import(liabilityItems, result.Configuration));
+                            result.LiabilityTransactions.AddRange(LiabilityLogic.Import(liabilityItems, result.Configuration, lastImportedAccountReference));
 
                             // All done
                             break;
