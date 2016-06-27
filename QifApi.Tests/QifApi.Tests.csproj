@@ -73,6 +73,9 @@
       <Link>SampleData\sample.qif</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="..\ApiTest\sample.with.one.account.qif">
+      <Link>SampleData\sample.with.one.account.qif</Link>
+    </EmbeddedResource>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
